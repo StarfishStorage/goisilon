@@ -2,8 +2,6 @@ module github.com/thecodeteam/goisilon
 
 go 1.16
 
-replace github.com/thecodeteam/goisilon => /home/ebressler/go/src/github.com/StarfishStorage/goisilon
-
 require (
 	github.com/akutz/gournal v0.5.0
 	github.com/davecgh/go-spew v1.1.1 // indirect
