@@ -12,8 +12,8 @@ import (
 type SnapshotList []*api.IsiSnapshot
 type Snapshot *api.IsiSnapshot
 
-func (c *Client) GetSnapshots(ctx context.Context) (SnapshotList, error) {
-	snapshots, err := api.GetIsiSnapshots(ctx, c.API)
+func (c *Client) GetSnapshots(ctx context.Context, scheduleName string) (SnapshotList, error) {
+	snapshots, err := api.GetIsiSnapshots(ctx, c.API, scheduleName)
 	if err != nil {
 		return nil, err
 	}
@@ -24,7 +24,7 @@ func (c *Client) GetSnapshots(ctx context.Context) (SnapshotList, error) {
 func (c *Client) GetSnapshotsByPath(
 	ctx context.Context, path string) (SnapshotList, error) {
 
-	snapshots, err := api.GetIsiSnapshots(ctx, c.API)
+	snapshots, err := api.GetIsiSnapshots(ctx, c.API, "")
 	if err != nil {
 		return nil, err
 	}
@@ -52,7 +52,7 @@ func (c *Client) GetSnapshot(
 	if name == "" {
 		return nil, err
 	}
-	snapshotList, err := c.GetSnapshots(ctx)
+	snapshotList, err := c.GetSnapshots(ctx, "")
 	if err != nil {
 		return nil, err
 	}
