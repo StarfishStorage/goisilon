@@ -12,9 +12,16 @@ import (
 // GetIsiSnapshots queries a list of all snapshots on the cluster
 func GetIsiSnapshots(
 	ctx context.Context,
-	client api.Client) (resp *getIsiSnapshotsResp, err error) {
+	client api.Client, scheduleName string) (resp *getIsiSnapshotsResp, err error) {
 	// PAPI call: GET https://1.2.3.4:8080/platform/1/snapshot/snapshots
-	err = client.Get(ctx, snapshotsPath, "", nil, nil, &resp)
+
+	var params api.OrderedValues
+
+	if scheduleName != "" {
+		params = api.NewOrderedValues([][]string{})
+		params.StringAdd("schedule", scheduleName)
+	}
+	err = client.Get(ctx, snapshotsPath, "", params, nil, &resp)
 	if err != nil {
 		return nil, err
 	}
