@@ -15,9 +15,10 @@ func GetIsiSnapshots(
 	client api.Client, scheduleName string) (resp *getIsiSnapshotsResp, err error) {
 	// PAPI call: GET https://1.2.3.4:8080/platform/1/snapshot/snapshots
 
-	params := api.NewOrderedValues([][]string{})
+	var params api.OrderedValues
 
 	if scheduleName != "" {
+		params = api.NewOrderedValues([][]string{})
 		params.StringAdd("schedule", scheduleName)
 	}
 	err = client.Get(ctx, snapshotsPath, "", params, nil, &resp)
