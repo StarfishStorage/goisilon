@@ -20,7 +20,7 @@ func TestSnapshotsGet(t *testing.T) {
 
 	// identify all snapshots on the cluster
 	snapshotMap := make(map[int64]string)
-	snapshots, err := client.GetSnapshots(defaultCtx)
+	snapshots, err := client.GetSnapshots(defaultCtx, "")
 	if err != nil {
 		panic(err)
 	}
@@ -45,7 +45,7 @@ func TestSnapshotsGet(t *testing.T) {
 	defer client.RemoveSnapshot(defaultCtx, testSnapshot2.Id, snapshotName2)
 
 	// get the updated snapshot list
-	snapshots, err = client.GetSnapshots(defaultCtx)
+	snapshots, err = client.GetSnapshots(defaultCtx, "")
 	if err != nil {
 		panic(err)
 	}

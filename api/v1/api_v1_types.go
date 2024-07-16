@@ -86,15 +86,15 @@ type IsiSnapshot struct {
 	PctReserve    float64 `json:"pct_reserve"`
 	Schedule      string  `json:"schedule"`
 	ShadowBytes   int64   `json:"shadow_bytes"`
-	Size          int64   `json:"size"`
+	Size          uint64  `json:"size"`
 	State         string  `json:"state"`
-	TargetId      int64   `json:"target_id"`
+	TargetId      uint64  `json:"target_id"`
 	TargetName    string  `json:"target_name"`
 }
 
 type getIsiSnapshotsResp struct {
 	SnapshotList []*IsiSnapshot `json:"snapshots"`
-	Total        int64          `json:"total"`
+	Total        uint64         `json:"total"`
 	Resume       string         `json:"resume"`
 }
 
