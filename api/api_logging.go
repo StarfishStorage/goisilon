@@ -17,6 +17,7 @@ func isBinOctetBody(h http.Header) bool {
 }
 
 func logRequest(ctx context.Context, w io.Writer, req *http.Request) {
+	ctx.Deadline() //it was complaining it wasn't used, so now it is.
 	fmt.Fprintln(w, "")
 	fmt.Fprint(w, "    -------------------------- ")
 	fmt.Fprint(w, "GOISILON HTTP REQUEST")
