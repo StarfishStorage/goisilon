@@ -316,6 +316,16 @@ func (c *client) DoWithHeaders(
 		if err = dec.Decode(resp); err != nil && err != io.EOF {
 			return err
 		}
+	case res.StatusCode == 403:
+		return &JSONError{
+			StatusCode: 403,
+			Err: []Error{
+				{
+					Code:    "403 Forbidden",
+					Message: "Permissions missing for access to Isilon API. Please check Isilon.",
+				},
+			},
+		}
 	default:
 		return parseJSONError(res)
 	}
