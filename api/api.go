@@ -486,19 +486,42 @@ func (c *client) VolumePath(volumeName string) string {
 }
 
 func (err *JSONError) Error() string {
-	return err.Err[0].Message
+	// Be defensive: err.Err maybe empty or message maybe blank
+	if len(err.Err) > 0 && err.Err[0].Message != "" {
+		return err.Err[0].Message
+	}
+	return http.StatusText(err.StatusCode)
 }
 
 func parseJSONError(r *http.Response) error {
-	jsonError := &JSONError{}
-	if err := json.NewDecoder(r.Body).Decode(jsonError); err != nil {
-		return err
+	jsonError := &JSONError{StatusCode: r.StatusCode}
+
+	// Read entire body of http response (may be empty or non-JSON)
+	var buf bytes.Buffer
+	if r.Body != nil {
+		io.Copy(&buf, r.Body)
+	}
+	b := buf.Bytes()
+
+	// Try decode into JSONError
+	if len(b) > 0 {
+		if err := json.NewDecoder(bytes.NewReader(b)).Decode(jsonError); err == nil && len(jsonError.Err) > 0 {
+			if jsonError.Err[0].Message == "" {
+				jsonError.Err[0].Message = r.Status
+			}
+			return jsonError
+		}
 	}
 
-	jsonError.StatusCode = r.StatusCode
-	if jsonError.Err[0].Message == "" {
-		jsonError.Err[0].Message = r.Status
+	// Fallback: Synthesize a single error from statuscode/body snippet
+	msg := strings.TrimSpace(string(b))
+
+	if msg == "" {
+		msg = r.Status
+	} else if len(b) > 200 {
+		msg = msg[:200] + "..."
 	}
 
+	jsonError.Err = []Error{{Code: strconv.Itoa(r.StatusCode), Message: msg}}
 	return jsonError
 }
